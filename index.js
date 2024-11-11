@@ -8,6 +8,8 @@ const FileUpload = require("express-fileupload");
 const cors = require("cors");
 const session = require("express-session");
 
+const SiswaRoute = require("./routes/SiswaRoute.js");
+const AuthRoute = require("./routes/AuthRoute.js");
 const UserRoute = require("./routes/UserRoute.js");
 
 dotenv.config();
@@ -36,5 +38,8 @@ app.use(FileUpload());
 app.use(express.static("public"));
 app.use("/images", express.static("./public/images"))
 
+app.use(SiswaRoute);
+app.use(AuthRoute);
+app.use(UserRoute);
 
 app.listen(process.env.APP_PORT, ()=> console.log("Server Sedang berjalan"));

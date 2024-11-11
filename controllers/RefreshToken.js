@@ -1,11 +1,12 @@
 const Users = require("../models/UserModel.js");
+const Siswa = require("../models/SiswaModel.js");
 const jwt = require("jsonwebtoken");
 
 const refreshToken = async(req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken
         if(!refreshToken) return res.sendStatus(401)
-        const user = await Users.findAll({
+        const user = await Siswa.findAll({
             where: {
                 refresh_token: refreshToken
             }
@@ -14,12 +15,14 @@ const refreshToken = async(req, res) => {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
             if(err) return res.sendStatus(403)
             const userId = user[0].id
-            const name = user[0].name
             const username = user[0].username
             const email = user[0].email
-            const noHp = user[0].noHp
+            const nama = user[0].nama
+            const kelas = user[0].kelas
+            const gender = user[0].gender
+            const umur = user[0].umur
             const alamat = user[0].alamat
-            const accessToken = jwt.sign({userId, name, username, email, noHp, alamat}, process.env.ACCESS_TOKEN_SECRET, {
+            const accessToken = jwt.sign({userId, username, email, nama, kelas, gender, umur, alamat}, process.env.ACCESS_TOKEN_SECRET, {
                 expiresIn: '15s'
             })
             res.json({ accessToken })
