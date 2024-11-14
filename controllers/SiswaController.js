@@ -9,6 +9,7 @@ const getSiswa = async (req, res) => {
     const siswa = await Siswa.findAll({
       attributes: [
         "id",
+        "nis",
         "username",
         "email",
         "nama",
@@ -59,6 +60,7 @@ const getProfileSiswa = async (req, res) => {
 
 const Register = async (req, res) => {
   const {
+    nis,
     username,
     email,
     nama,
@@ -86,6 +88,7 @@ const Register = async (req, res) => {
 
   try {
     const newSiswa = await Siswa.create({
+      nis,
       username,
       email,
       nama,
@@ -101,6 +104,7 @@ const Register = async (req, res) => {
       data: {
         user: {
           id: newSiswa.id,
+          nis: newSiswa.nis,
           username: newSiswa.username,
           email: newSiswa.email,
           nama: newSiswa.nama,
@@ -133,6 +137,7 @@ const Login = async (req, res) => {
     const accessToken = jwt.sign(
       {
         userId: siswa.id,
+        nis: siswa.nis,
         username: siswa.username,
         email: siswa.email,
         nama: siswa.nama,
@@ -148,6 +153,7 @@ const Login = async (req, res) => {
     const refreshToken = jwt.sign(
       {
         userId: siswa.id,
+        nis: siswa.nis,
         username: siswa.username,
         email: siswa.email,
         nama: siswa.nama,

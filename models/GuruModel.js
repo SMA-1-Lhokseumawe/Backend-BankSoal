@@ -1,41 +1,41 @@
 const { Sequelize } = require("sequelize");
 const db = require("../config/Database.js");
 
+const Users = require("./UserModel.js")
+
 const { DataTypes } = Sequelize;
 
-const Siswa = db.define('siswa', {
-    nis: {
+const Guru = db.define('guru', {
+    nip: {
         type: DataTypes.INTEGER
     },
-    username: {
+    nama: {
         type: DataTypes.STRING
     },
     email: {
         type: DataTypes.STRING
     },
-    nama: {
-        type: DataTypes.STRING
-    },
-    kelas: {
-        type: DataTypes.STRING
-    },
     gender: {
         type: DataTypes.STRING
     },
-    umur: {
-        type: DataTypes.INTEGER
+    ttl: {
+        type: DataTypes.STRING
     },
     alamat: {
         type: DataTypes.STRING
     },
-    password: {
-        type: DataTypes.STRING
-    },
-    refresh_token: {
-        type: DataTypes.TEXT
-    },
+    userId:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate:{
+            notEmpty: true
+        }
+    }
 }, {
     freezeTableName: true
 });
 
-module.exports = Siswa
+Users.hasMany(Guru);
+Guru.belongsTo(Users, {foreignKey: 'userId'})
+
+module.exports = Guru
