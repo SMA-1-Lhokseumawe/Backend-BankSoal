@@ -7,13 +7,10 @@ const Siswa = db.define('siswa', {
     nis: {
         type: DataTypes.INTEGER
     },
-    username: {
+    nama: {
         type: DataTypes.STRING
     },
     email: {
-        type: DataTypes.STRING
-    },
-    nama: {
         type: DataTypes.STRING
     },
     kelas: {
@@ -27,12 +24,6 @@ const Siswa = db.define('siswa', {
     },
     alamat: {
         type: DataTypes.STRING
-    },
-    password: {
-        type: DataTypes.STRING
-    },
-    refresh_token: {
-        type: DataTypes.TEXT
     },
 }, {
     freezeTableName: true
