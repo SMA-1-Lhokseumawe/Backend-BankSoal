@@ -1,5 +1,8 @@
 const Guru = require("../models/GuruModel.js");
 const Users = require("../models/UserModel.js")
+const { Op } = require("sequelize");
+const path = require("path");
+const fs = require("fs");
 
 const getAllGuru = async (req, res) => {
     try {
@@ -46,7 +49,13 @@ const getProfileGuru = async (req, res) => {
     try {
       // Find student with matching userId
       const guru = await Guru.findOne({
-        where: { userId: userId }
+        where: { userId: userId },
+        include: [
+          {
+            model: Users,
+            attributes: ["username", "email", "role"],
+          },
+        ],
       });
   
       if (!guru) {
@@ -77,7 +86,7 @@ const getGuruById = async (req, res) => {
         let response;
         if (req.role === "admin") {
             response = await Guru.findOne({
-                attributes: ['id', 'nip', 'nama', 'email', 'gender', 'ttl', 'alamat'],
+                attributes: ['id', 'nip', 'nama', 'email', 'gender', 'tanggalLahir', 'alamat', 'image', 'url'],
                 where: {
                     id: req.params.id
                 },
@@ -88,7 +97,7 @@ const getGuruById = async (req, res) => {
             })
         } else {
             response = await Guru.findOne({
-                attributes: ['id', 'nip', 'nama', 'email', 'gender', 'ttl', 'alamat'],
+                attributes: ['id', 'nip', 'nama', 'email', 'gender', 'tanggalLahir', 'alamat', 'image', 'url'],
                 where: {
                     [Op.and]: [{ id: req.params.id }, { userId: req.userId }]
                 },

@@ -8,18 +8,18 @@ const fs = require("fs");
 const getSiswa = async (req, res) => {
   try {
     const siswa = await Siswa.findAll({
-      attributes: { exclude: ['kelaId'] },
+      attributes: { exclude: ["kelaId"] },
       include: [
         {
           model: Users,
-          attributes: ['username', 'email', 'role']
-      },
+          attributes: ["username", "email", "role"],
+        },
         {
-            model: Kelas,
-            attributes: ['id', 'kelas'],
-            as: 'kelas'
-        }
-    ]
+          model: Kelas,
+          attributes: ["id", "kelas"],
+          as: "kelas",
+        },
+      ],
     });
     res.json(siswa);
   } catch (error) {
@@ -32,47 +32,47 @@ const getSiswa = async (req, res) => {
 
 const getSiswaById = async (req, res) => {
   try {
-      let response;
-      if (req.role === "admin" || req.role === "guru") {
-          response = await Siswa.findOne({
-              attributes: { exclude: ['kelaId'] },
-              where: {
-                  id: req.params.id
-              },
-              include: [
-                  {
-                      model: Users,
-                      attributes: ['username', 'email', 'role']
-                  },
-                  {
-                      model: Kelas,
-                      attributes: ['id', 'kelas'],
-                      as: 'kelas'
-                  }
-              ]
-          })
-      } else {
-          response = await Siswa.findOne({
-              attributes: { exclude: ['kelaId'] },
-              where: {
-                  [Op.and]: [{ id: req.params.id }, { userId: req.userId }]
-              },
-              include: [
-                  {
-                      model: Users,
-                      attributes: ['username', 'email', 'role']
-                  },
-                  {
-                      model: Kelas,
-                      attributes: ['id', 'kelas'],
-                      as: 'kelas'
-                  }
-              ]
-          });
-      }
-      res.status(200).json(response);
+    let response;
+    if (req.role === "admin" || req.role === "guru") {
+      response = await Siswa.findOne({
+        attributes: { exclude: ["kelaId"] },
+        where: {
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: Users,
+            attributes: ["username", "email", "role"],
+          },
+          {
+            model: Kelas,
+            attributes: ["id", "kelas"],
+            as: "kelas",
+          },
+        ],
+      });
+    } else {
+      response = await Siswa.findOne({
+        attributes: { exclude: ["kelaId"] },
+        where: {
+          [Op.and]: [{ id: req.params.id }, { userId: req.userId }],
+        },
+        include: [
+          {
+            model: Users,
+            attributes: ["username", "email", "role"],
+          },
+          {
+            model: Kelas,
+            attributes: ["id", "kelas"],
+            as: "kelas",
+          },
+        ],
+      });
+    }
+    res.status(200).json(response);
   } catch (error) {
-      console.log(error.message);
+    console.log(error.message);
   }
 };
 
@@ -85,34 +85,38 @@ const getProfileSiswa = async (req, res) => {
       where: { userId: userId },
       include: [
         {
+          model: Users,
+          attributes: ["username", "email", "role"],
+        },
+        {
           model: Kelas,
-          as: 'kelas',
-        }
+          as: "kelas",
+        },
       ],
       attributes: {
-        exclude: ['kelaId'] // Exclude the kelaId field from results
-      }
+        exclude: ["kelaId"], // Exclude the kelaId field from results
+      },
     });
 
     if (!siswa) {
       return res.status(404).json({
         status: false,
         message: "Data siswa tidak ditemukan",
-        data: null
+        data: null,
       });
     }
 
     res.status(200).json({
       status: true,
       message: "Berhasil mengambil profil siswa",
-      data: siswa
+      data: siswa,
     });
   } catch (err) {
     console.log("Error fetching profile:", err);
     res.status(500).json({
       status: false,
       message: "Terjadi kesalahan, silahkan coba lagi",
-      data: null
+      data: null,
     });
   }
 };
@@ -126,11 +130,11 @@ const createSiswa = async (req, res) => {
     const gender = req.body.gender;
     const umur = req.body.umur;
     const alamat = req.body.alamat;
-    
+
     // Default values if no image is uploaded
     let fileName = null;
     let url = null;
-    
+
     // Check if a file was uploaded
     if (req.files && req.files.file) {
       const file = req.files.file;
@@ -140,21 +144,21 @@ const createSiswa = async (req, res) => {
       fileName = now + file.md5 + ext;
       url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
       const allowedType = [".png", ".jpg", ".jpeg"];
-      
+
       // Validate file type
       if (!allowedType.includes(ext.toLowerCase()))
         return res.status(422).json({ msg: "Invalid Image" });
-      
+
       // Validate file size
       if (fileSize > 5000000)
         return res.status(422).json({ msg: "Image must be less than 5 MB" });
-      
+
       // Save the file
       file.mv(`./public/images/${fileName}`, (err) => {
         if (err) return res.status(500).json({ msg: err.message });
       });
     }
-    
+
     // Create the student record
     const siswa = await Siswa.create({
       nis: nis,
@@ -169,20 +173,20 @@ const createSiswa = async (req, res) => {
       url: url,
       userId: req.userId,
     });
-    
+
     res.status(201).json({
       status: true,
       message: "Siswa berhasil ditambahkan",
       data: {
-        id: siswa.id
-      }
+        id: siswa.id,
+      },
     });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({
       status: false,
       message: "Gagal menambahkan siswa",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -287,5 +291,5 @@ module.exports = {
   getProfileSiswa,
   createSiswa,
   updateProfile,
-  deleteSiswa
+  deleteSiswa,
 };
