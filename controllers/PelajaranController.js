@@ -6,7 +6,7 @@ const { Op } = require("sequelize");
 
 const getPelajaran = async (req, res) => {
     try {
-        if (req.role === "admin") {
+        if (req.role === "admin" || req.role === "guru") {
             const response = await Pelajaran.findAll({
                 attributes: { exclude: ['kelaId'] },
                 include: [
@@ -50,7 +50,7 @@ const getPelajaran = async (req, res) => {
 const getPelajaranById = async (req, res) => {
     try {
         let response;
-        if (req.role === "admin") {
+        if (req.role === "admin" || req.role === "guru") {
             response = await Pelajaran.findOne({
                 attributes: { exclude: ['kelaId'] },
                 where: {

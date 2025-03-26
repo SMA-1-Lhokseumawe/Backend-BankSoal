@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+    getAllKelas,
     getKelas,
     getKelasById,
     createKelas,
@@ -10,6 +11,7 @@ const { verifyUser } = require("../middleware/AuthUser.js")
 
 const router = express.Router()
 
+router.get('/all-kelas', verifyUser, getAllKelas)
 router.get('/kelas', verifyUser, getKelas)
 router.get('/kelas/:id', verifyUser, getKelasById)
 router.post('/kelas', verifyUser, createKelas)

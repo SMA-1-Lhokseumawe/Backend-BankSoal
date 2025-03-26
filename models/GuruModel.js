@@ -18,11 +18,19 @@ const Guru = db.define('guru', {
     gender: {
         type: DataTypes.STRING
     },
-    ttl: {
-        type: DataTypes.STRING
+    tanggalLahir: {
+        type: DataTypes.DATE
     },
     alamat: {
         type: DataTypes.STRING
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    url: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     userId:{
         type: DataTypes.INTEGER,

@@ -3,9 +3,18 @@ const Users = require("../models/UserModel.js")
 
 const { Op } = require("sequelize");
 
+const getAllKelas = async (req, res) => {
+    try {
+        const response = await Kelas.findAll();
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
+
 const getKelas = async (req, res) => {
     try {
-        if (req.role === "admin") {
+        if (req.role === "admin" || req.role === "guru") {
             const kelas = await Kelas.findAll({
                 include: [{
                     model: Users,
@@ -33,7 +42,7 @@ const getKelas = async (req, res) => {
 const getKelasById = async (req, res) => {
     try {
         let response;
-        if (req.role === "admin") {
+        if (req.role === "admin" || req.role === "guru") {
             response = await Kelas.findOne({
                 attributes: ['id', 'kelas'],
                 where: {
@@ -110,6 +119,7 @@ const deleteKelas = async (req, res) => {
 };
 
 module.exports = {
+    getAllKelas,
     getKelas,
     getKelasById,
     createKelas,

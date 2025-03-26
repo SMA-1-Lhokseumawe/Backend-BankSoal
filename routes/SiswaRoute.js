@@ -1,9 +1,14 @@
 const express = require("express");
-const { getSiswa, getProfileSiswa, updateProfile } = require("../controllers/SiswaController.js");
+const { getSiswa, getProfileSiswa, createSiswa, updateProfile, deleteSiswa, getSiswaById } = require("../controllers/SiswaController.js");
 const router = express.Router();
 
-router.get("/profile/:id", getProfileSiswa );
+const { verifyUser } = require("../middleware/AuthUser.js") 
+
+router.get("/profile-siswa", verifyUser, getProfileSiswa);
 router.get('/siswa', getSiswa);
-router.put('/update-profile', updateProfile);
+router.get('/siswa/:id', verifyUser, getSiswaById);
+router.post('/siswa', verifyUser, createSiswa)
+router.patch('/siswa/:id', verifyUser, updateProfile)
+router.delete('/siswa/:id', verifyUser, deleteSiswa)
 
 module.exports = router;
