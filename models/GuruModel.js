@@ -7,7 +7,7 @@ const { DataTypes } = Sequelize;
 
 const Guru = db.define('guru', {
     nip: {
-        type: DataTypes.INTEGER
+        type: DataTypes.BIGINT(225)
     },
     nama: {
         type: DataTypes.STRING

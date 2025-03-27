@@ -43,7 +43,22 @@ const adminOnly = async (req, res, next) => {
     next()
 }
 
+const guruOnly = async (req, res, next) => {
+    const user = await Users.findOne({
+        where: {
+            uuid: req.userUuid
+        }
+    });
+
+    if (!user) return res.status(404).json({msg: "User tidak ditemukan"});
+
+    if (user.role !== "guru") return res.status(403).json({msg: "Khusus Guru"});
+
+    next();
+};
+
 module.exports = {
     verifyUser,
-    adminOnly
+    adminOnly,
+    guruOnly
 };
