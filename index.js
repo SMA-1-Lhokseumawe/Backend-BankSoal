@@ -14,6 +14,8 @@ const SiswaRoute = require("./routes/SiswaRoute.js");
 const GuruRoute = require("./routes/GuruRoute.js");
 const KelasRoute = require("./routes/KelasRoute.js");
 const PelajaranRoute = require("./routes/PelajaranRoute.js");
+const ModulRoute = require("./routes/ModulRoute.js");
+const SubModulRoute = require("./routes/SubModulRoute.js");
 
 dotenv.config();
 const app = express();
@@ -47,5 +49,7 @@ app.use(SiswaRoute);
 app.use(GuruRoute);
 app.use(KelasRoute);
 app.use(PelajaranRoute);
+app.use(ModulRoute);
+app.use(SubModulRoute);
 
 app.listen(process.env.APP_PORT, ()=> console.log("Server Sedang berjalan"));
