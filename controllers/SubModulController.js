@@ -48,7 +48,7 @@ const getSubModul = async (req, res) => {
 const getSubModulById = async (req, res) => {
     try {
         let response;
-        if (req.role === "admin" || req.role === "guru") {
+        if (req.role === "admin" || req.role === "guru" || req.role === "siswa") {
             response = await SubModul.findOne({
                 where: {
                     id: req.params.id
@@ -98,7 +98,7 @@ const getSubModulByModulId = async (req, res) => {
         }
 
         let response;
-        if (req.role === "admin" || req.role === "guru") {
+        if (req.role === "admin" || req.role === "guru" || req.role === "siswa") {
             // Admin and teachers can access all subModuls for a specific modul
             response = await SubModul.findAll({
                 where: {

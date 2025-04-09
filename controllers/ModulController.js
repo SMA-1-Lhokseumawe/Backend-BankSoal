@@ -29,7 +29,7 @@ const getModul = async (req, res) => {
             });
             res.status(200).json(response);
         } else {
-            const response = await Pelajaran.findAll({
+            const response = await Modul.findAll({
                 where: {
                     userId: req.userId,
                 },
