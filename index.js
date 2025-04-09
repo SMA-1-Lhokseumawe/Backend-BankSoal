@@ -35,8 +35,9 @@ app.use(session({
         secure: 'auto'
     }
 }))
-app.use(bodyParser.json()); // Untuk menguraikan application/json
-app.use(bodyParser.urlencoded({ extended: true })); 
+
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(FileUpload());

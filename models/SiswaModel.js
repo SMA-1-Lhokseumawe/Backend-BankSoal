@@ -33,7 +33,19 @@ const Siswa = db.define('siswa', {
         type: DataTypes.STRING
     },
     gayaBelajar: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    persentaseVisual: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    persentaseAuditori: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    persentaseKinestetik: {
+        type: DataTypes.FLOAT,
         allowNull: true
     },
     image: {

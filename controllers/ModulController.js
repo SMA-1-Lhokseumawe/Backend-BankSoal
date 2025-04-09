@@ -7,7 +7,7 @@ const { Op } = require("sequelize");
 
 const getModul = async (req, res) => {
     try {
-        if (req.role === "admin" || req.role === "guru") {
+        if (req.role === "admin" || req.role === "guru" || req.role === "siswa") {
             const response = await Modul.findAll({
                 attributes: { exclude: ['kelaId'] },
                 include: [

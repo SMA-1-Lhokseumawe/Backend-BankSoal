@@ -89,6 +89,65 @@ const getSubModulById = async (req, res) => {
     }
 };
 
+const getSubModulByModulId = async (req, res) => {
+    try {
+        const modulId = req.params.modulId;
+        
+        if (!modulId) {
+            return res.status(400).json({ msg: "ModulId is required" });
+        }
+
+        let response;
+        if (req.role === "admin" || req.role === "guru") {
+            // Admin and teachers can access all subModuls for a specific modul
+            response = await SubModul.findAll({
+                where: {
+                    modulId: modulId
+                },
+                include: [
+                    {
+                        model: Users,
+                        attributes: ['username', 'email', 'role']
+                    },
+                    {
+                        model: Modul,
+                        attributes: ['id', 'judul'],
+                        as: 'modul'
+                    }
+                ],
+                order: [['createdAt', 'ASC']] // Order by creation date
+            });
+        } else {
+            // Regular users can only see subModuls they created or have access to
+            response = await SubModul.findAll({
+                where: {
+                    [Op.and]: [{ modulId: modulId }, { userId: req.userId }]
+                },
+                include: [
+                    {
+                        model: Users,
+                        attributes: ['username', 'email', 'role']
+                    },
+                    {
+                        model: Modul,
+                        attributes: ['id', 'judul'],
+                        as: 'modul'
+                    }
+                ],
+                order: [['createdAt', 'ASC']] // Order by creation date
+            });
+        }
+
+        if (response.length === 0) {
+            return res.status(404).json({ msg: "No sub modules found for this modul" });
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
 const createSubModul = async (req, res) => {
     const subJudul = req.body.subJudul;
     const subDeskripsi = req.body.subDeskripsi;
@@ -145,6 +204,7 @@ const deleteSubModul = async (req, res) => {
 module.exports = {
     getSubModul,
     getSubModulById,
+    getSubModulByModulId,
     createSubModul,
     updateSubModul,
     deleteSubModul

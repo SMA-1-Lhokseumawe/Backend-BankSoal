@@ -169,6 +169,9 @@ const createSiswa = async (req, res) => {
       umur: umur,
       alamat: alamat,
       gayaBelajar: null,
+      persentaseVisual: null,
+      persentaseAuditori: null,
+      persentaseKinestetik: null,
       image: fileName,
       url: url,
       userId: req.userId,
@@ -235,6 +238,9 @@ const updateProfile = async (req, res) => {
   const umur = req.body.umur;
   const alamat = req.body.alamat;
   const gayaBelajar = req.body.gayaBelajar;
+  const persentaseVisual = req.body.persentaseVisual;
+  const persentaseAuditori = req.body.persentaseAuditori;
+  const persentaseKinestetik = req.body.persentaseKinestetik;
   const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
 
   try {
@@ -248,6 +254,9 @@ const updateProfile = async (req, res) => {
         umur: umur,
         alamat: alamat,
         gayaBelajar: gayaBelajar,
+        persentaseVisual: persentaseVisual,
+        persentaseAuditori: persentaseAuditori,
+        persentaseKinestetik: persentaseKinestetik,
         image: fileName,
         url: url,
       },

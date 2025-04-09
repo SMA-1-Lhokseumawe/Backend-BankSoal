@@ -44,7 +44,7 @@ const getKelasById = async (req, res) => {
         let response;
         if (req.role === "admin" || req.role === "guru") {
             response = await Kelas.findOne({
-                attributes: ['id', 'kelas'],
+                attributes: ['id', 'kelas', 'namaKelas'],
                 where: {
                     id: req.params.id
                 },
@@ -55,7 +55,7 @@ const getKelasById = async (req, res) => {
             })
         } else {
             response = await Kelas.findOne({
-                attributes: ['id', 'kelas'],
+                attributes: ['id', 'kelas', 'namaKelas'],
                 where: {
                     [Op.and]: [{ id: req.params.id }, { userId: req.userId }]
                 },
@@ -73,6 +73,7 @@ const getKelasById = async (req, res) => {
 
 const createKelas = async (req, res) => {
     const kelas = req.body.kelas;
+    const namaKelas = req.body.namaKelas;
 
     try {
         const userId = req.userId;
@@ -83,6 +84,7 @@ const createKelas = async (req, res) => {
 
         await Kelas.create({
             kelas: kelas,
+            namaKelas: namaKelas,
             userId: req.userId
         });
 
