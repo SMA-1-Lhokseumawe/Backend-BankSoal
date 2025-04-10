@@ -13,14 +13,22 @@ const Post = db.define('post', {
         type: DataTypes.STRING
     },
     kategori: {
-        type: DataTypes.STRING
+        type: DataTypes.JSON
     },
-    image: {
+    namaProfile: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    urlImageProfile: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    images: {
+        type: DataTypes.JSON,
         allowNull: true,
     },
     url: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: true,
     },
     userId:{

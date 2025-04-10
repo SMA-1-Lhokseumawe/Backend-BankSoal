@@ -23,6 +23,8 @@ const getAllKomentar = async (req, res) => {
 const createKomentar = async (req, res) => {
   const content = req.body.content;
   const postId = req.body.postId;
+  const namaProfile = req.body.namaProfile;
+  const urlImageProfile = req.body.urlImageProfile;
 
   try {
     const userId = req.userId;
@@ -36,6 +38,8 @@ const createKomentar = async (req, res) => {
     await Komentar.create({
       content: content,
       postId: postId,
+      namaProfile: namaProfile,
+      urlImageProfile: urlImageProfile,
       userId: req.userId,
     });
 

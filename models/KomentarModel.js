@@ -14,6 +14,14 @@ const Komentar = db.define('komentar', {
     postId: {
         type: DataTypes.INTEGER
     },
+    namaProfile: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    urlImageProfile: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
