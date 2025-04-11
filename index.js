@@ -7,7 +7,9 @@ const cookieParser = require("cookie-parser");
 const FileUpload = require("express-fileupload");
 const cors = require("cors");
 const session = require("express-session");
+const setupAssociations = require('./models/associations');
 
+setupAssociations();
 const AuthRoute = require("./routes/AuthRoute.js");
 const UserRoute = require("./routes/UserRoute.js");
 const SiswaRoute = require("./routes/SiswaRoute.js");

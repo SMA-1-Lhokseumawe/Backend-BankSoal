@@ -1,9 +1,5 @@
 const { Sequelize } = require("sequelize");
 const db = require("../config/Database.js");
-
-const Users = require("./UserModel.js")
-const Post = require("./PostModel.js");
-
 const { DataTypes } = Sequelize;
 
 const Komentar = db.define('komentar', {
@@ -33,13 +29,4 @@ const Komentar = db.define('komentar', {
     freezeTableName: true
 });
 
-Users.hasMany(Komentar);
-Komentar.belongsTo(Users, {foreignKey: 'userId'})
-
-Post.hasMany(Komentar);
-Komentar.belongsTo(Post, { 
-    foreignKey: 'postId', 
-    as: 'post'
-});
-
-module.exports = Komentar
+module.exports = Komentar;

@@ -131,7 +131,9 @@ const getAllPostWithoutComment = async (req, res) => {
       };
     });
 
-    const filteredPost = parsedPost.filter((item) => item.komentars.length === 0);
+    const filteredPost = parsedPost.filter(
+      (item) => item.komentars.length === 0
+    );
 
     res.status(200).json(filteredPost);
   } catch (error) {
@@ -265,6 +267,96 @@ const getPost = async (req, res) => {
   }
 };
 
+const getPostById = async (req, res) => {
+  try {
+    let response;
+    if (req.role === "admin") {
+      response = await Post.findOne({
+        where: {
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: Users,
+            attributes: ["username", "email", "role"],
+          },
+        ],
+      });
+    } else {
+      response = await Post.findOne({
+        where: {
+          id: req.params.id,
+          userId: req.userId,
+        },
+        include: [
+          {
+            model: Users,
+            attributes: ["username", "email", "role"],
+          },
+        ],
+      });
+    }
+
+    // Cek jika post tidak ditemukan
+    if (!response) {
+      return res.status(404).json({ msg: "Post tidak ditemukan" });
+    }
+
+    // Proses parsing untuk post tunggal, bukan array
+    let kategori = response.kategori;
+    let images = response.images;
+    let url = response.url;
+
+    // Parsing kategori
+    if (typeof kategori === "string") {
+      try {
+        kategori = JSON.parse(kategori);
+      } catch (error) {
+        console.error(
+          `Failed to parse kategori for Post ID ${response.id}:`,
+          error.message
+        );
+      }
+    }
+
+    // Parsing images
+    if (typeof images === "string") {
+      try {
+        images = JSON.parse(images);
+      } catch (error) {
+        console.error(
+          `Failed to parse images for Post ID ${response.id}:`,
+          error.message
+        );
+      }
+    }
+
+    // Parsing url
+    if (typeof url === "string") {
+      try {
+        url = JSON.parse(url);
+      } catch (error) {
+        console.error(
+          `Failed to parse url for Post ID ${response.id}:`,
+          error.message
+        );
+      }
+    }
+
+    // Kembalikan data post yang sudah diproses
+    const parsedPost = {
+      ...response.toJSON(),
+      kategori: kategori,
+      images: images,
+      url: url,
+    };
+
+    res.status(200).json(parsedPost);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 const createPost = async (req, res) => {
   console.log("Body data: ", req.body); // Debug body input
   console.log("File data: ", req.files); // Debug file input
@@ -312,9 +404,10 @@ const createPost = async (req, res) => {
 
   try {
     // Process kategori whether it's a string or already an array
-    const processedKategori = typeof kategori === "string" 
-      ? kategori.split(",").map((f) => f.trim()) 
-      : kategori || [];
+    const processedKategori =
+      typeof kategori === "string"
+        ? kategori.split(",").map((f) => f.trim())
+        : kategori || [];
 
     const post = await Post.create({
       judul,
@@ -326,7 +419,7 @@ const createPost = async (req, res) => {
       url: urls,
       userId: req.userId,
     });
-    
+
     res.status(201).json({ id: post.id, msg: "Post berhasil di tambahkan" });
   } catch (error) {
     console.log(error.message);
@@ -501,6 +594,7 @@ module.exports = {
   getAllPost,
   getAllPostWithoutComment,
   getPost,
+  getPostById,
   createPost,
   updatePost,
   deletePost,
