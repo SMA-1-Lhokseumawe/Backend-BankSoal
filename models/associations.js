@@ -8,6 +8,7 @@ const Post = require("./PostModel");
 const Komentar = require("./KomentarModel");
 const Soal = require("./SoalModel");
 const Nilai = require("./NilaiModel");
+const NilaiSoal = require("./NilaiSoalModel");
 const Pelajaran = require("./PelajaranModel");
 const Kelas = require("./KelasModel");
 const UploadImage = require("./UploadImageModel");
@@ -183,6 +184,21 @@ function setupAssociations() {
     as: "siswa",
     onDelete: "CASCADE",
     hooks: true,
+  });
+
+  // New Soal-Nilai Many-to-Many Association
+  Soal.belongsToMany(Nilai, {
+    through: NilaiSoal,
+    foreignKey: 'soalId',
+    otherKey: 'nilaiId',
+    as: 'nilais'
+  });
+
+  Nilai.belongsToMany(Soal, {
+    through: NilaiSoal,
+    foreignKey: 'nilaiId',
+    otherKey: 'soalId',
+    as: 'soals'
   });
 }
 

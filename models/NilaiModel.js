@@ -44,6 +44,21 @@ const Nilai = db.define('nilai', {
             notEmpty: true
         }
     },
+    soalIds: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: [],
+        validate: {
+            isValidSoalIds(value) {
+                if (value && !Array.isArray(value)) {
+                    throw new Error('soalIds must be an array');
+                }
+                if (value && value.some(id => !Number.isInteger(id))) {
+                    throw new Error('All soalIds must be integers');
+                }
+            }
+        }
+    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
