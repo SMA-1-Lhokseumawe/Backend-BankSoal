@@ -3,14 +3,26 @@ const db = require("../config/Database.js");
 
 const { DataTypes } = Sequelize;
 
-const Modul = db.define('modul', {
-    judul: {
+const Soal = db.define('soal', {
+    soal: {
+        type: DataTypes.TEXT
+    },
+    optionA: {
         type: DataTypes.STRING
     },
-    deskripsi: {
+    optionB: {
         type: DataTypes.STRING
     },
-    durasi: {
+    optionC: {
+        type: DataTypes.STRING
+    },
+    optionD: {
+        type: DataTypes.STRING
+    },
+    optionE: {
+        type: DataTypes.STRING
+    },
+    correctAnswer: {
         type: DataTypes.STRING
     },
     kelasId: {
@@ -27,10 +39,6 @@ const Modul = db.define('modul', {
             notEmpty: true
         }
     },
-    type: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     userId:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -42,4 +50,4 @@ const Modul = db.define('modul', {
     freezeTableName: true
 });
 
-module.exports = Modul
+module.exports = Soal

@@ -1,8 +1,6 @@
 const { Sequelize } = require("sequelize");
 const db = require("../config/Database.js");
 
-const Users = require("./UserModel.js")
-
 const { DataTypes } = Sequelize;
 
 const Guru = db.define('guru', {
@@ -42,8 +40,5 @@ const Guru = db.define('guru', {
 }, {
     freezeTableName: true
 });
-
-Users.hasMany(Guru);
-Guru.belongsTo(Users, {foreignKey: 'userId'})
 
 module.exports = Guru

@@ -1,9 +1,6 @@
 const { Sequelize } = require("sequelize");
 const db = require("../config/Database.js");
 
-const Users = require("./UserModel.js")
-const Kelas = require("./KelasModel.js");
-
 const { DataTypes } = Sequelize;
 
 const Pelajaran = db.define('pelajaran', {
@@ -26,15 +23,6 @@ const Pelajaran = db.define('pelajaran', {
     }
 }, {
     freezeTableName: true
-});
-
-Users.hasMany(Pelajaran);
-Pelajaran.belongsTo(Users, {foreignKey: 'userId'})
-
-Kelas.hasMany(Pelajaran);
-Pelajaran.belongsTo(Kelas, { 
-    foreignKey: 'kelasId', 
-    as: 'kelas' 
 });
 
 module.exports = Pelajaran

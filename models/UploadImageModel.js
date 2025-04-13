@@ -3,19 +3,14 @@ const db = require("../config/Database.js");
 
 const { DataTypes } = Sequelize;
 
-const SubModul = db.define('sub_modul', {
-    subJudul: {
-        type: DataTypes.STRING
+const UploadImage = db.define('image', {
+    image: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    subDeskripsi: {
-        type: DataTypes.STRING
-    },
-    content: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    modulId: {
-        type: DataTypes.INTEGER
+    url: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     userId:{
         type: DataTypes.INTEGER,
@@ -28,4 +23,4 @@ const SubModul = db.define('sub_modul', {
     freezeTableName: true
 });
 
-module.exports = SubModul
+module.exports = UploadImage

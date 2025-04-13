@@ -20,6 +20,9 @@ const ModulRoute = require("./routes/ModulRoute.js");
 const SubModulRoute = require("./routes/SubModulRoute.js");
 const PostRoute = require("./routes/PostRoute.js");
 const KomentarRoute = require("./routes/KomentarRoute.js");
+const SoalRoute = require("./routes/SoalRoute.js");
+const NilaiRoute = require("./routes/NilaiRoute.js");
+const UploadImageRoute = require("./routes/UploadImageRoute.js");
 
 dotenv.config();
 const app = express();
@@ -58,5 +61,8 @@ app.use(ModulRoute);
 app.use(SubModulRoute);
 app.use(PostRoute);
 app.use(KomentarRoute);
+app.use(SoalRoute);
+app.use(NilaiRoute);
+app.use(UploadImageRoute);
 
 app.listen(process.env.APP_PORT, ()=> console.log("Server Sedang berjalan"));
