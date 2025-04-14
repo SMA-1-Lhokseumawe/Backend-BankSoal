@@ -23,6 +23,7 @@ const KomentarRoute = require("./routes/KomentarRoute.js");
 const SoalRoute = require("./routes/SoalRoute.js");
 const NilaiRoute = require("./routes/NilaiRoute.js");
 const UploadImageRoute = require("./routes/UploadImageRoute.js");
+const NotificationRoute = require("./routes/NotificationRoute.js");
 
 dotenv.config();
 const app = express();
@@ -64,5 +65,6 @@ app.use(KomentarRoute);
 app.use(SoalRoute);
 app.use(NilaiRoute);
 app.use(UploadImageRoute);
+app.use(NotificationRoute);
 
 app.listen(process.env.APP_PORT, ()=> console.log("Server Sedang berjalan"));

@@ -1,4 +1,3 @@
-// associations.js
 const Users = require("./UserModel");
 const Guru = require("./GuruModel");
 const Siswa = require("./SiswaModel");
@@ -12,6 +11,7 @@ const NilaiSoal = require("./NilaiSoalModel");
 const Pelajaran = require("./PelajaranModel");
 const Kelas = require("./KelasModel");
 const UploadImage = require("./UploadImageModel");
+const Notification = require("./NotificationModel");
 
 function setupAssociations() {
   // User Associations
@@ -52,25 +52,25 @@ function setupAssociations() {
   Kelas.hasMany(Pelajaran, {
     foreignKey: "kelasId",
     onDelete: "CASCADE",
-    hooks: true
+    hooks: true,
   });
-  Pelajaran.belongsTo(Kelas, { 
-    foreignKey: "kelasId", 
+  Pelajaran.belongsTo(Kelas, {
+    foreignKey: "kelasId",
     as: "kelas",
     onDelete: "CASCADE",
-    hooks: true
+    hooks: true,
   });
 
   Kelas.hasMany(Siswa, {
     foreignKey: "kelasId",
     onDelete: "CASCADE",
-    hooks: true
+    hooks: true,
   });
-  Siswa.belongsTo(Kelas, { 
-    foreignKey: "kelasId", 
+  Siswa.belongsTo(Kelas, {
+    foreignKey: "kelasId",
     as: "kelas",
     onDelete: "CASCADE",
-    hooks: true
+    hooks: true,
   });
 
   // Post Associations
@@ -186,20 +186,61 @@ function setupAssociations() {
     hooks: true,
   });
 
-  // New Soal-Nilai Many-to-Many Association
+  // NilaiSoal Associations
+  Nilai.hasMany(NilaiSoal, {
+    foreignKey: "nilaiId",
+    onDelete: "CASCADE", // CASCADE delete for NilaiSoal
+    hooks: true,
+  });
+
+  // Many-to-Many Association for Soal and Nilai
   Soal.belongsToMany(Nilai, {
     through: NilaiSoal,
-    foreignKey: 'soalId',
-    otherKey: 'nilaiId',
-    as: 'nilais'
+    foreignKey: "soalId",
+    otherKey: "nilaiId",
+    as: "nilais",
   });
 
   Nilai.belongsToMany(Soal, {
     through: NilaiSoal,
-    foreignKey: 'nilaiId',
-    otherKey: 'soalId',
-    as: 'soals'
+    foreignKey: "nilaiId",
+    otherKey: "soalId",
+    as: "soals",
   });
+
+  NilaiSoal.belongsTo(Nilai, { foreignKey: "nilaiId" });
+
+  // User Notifications - Fixed associations
+  if (Notification && Notification.tableName) {
+    Users.hasMany(Notification, { 
+      foreignKey: "targetUserId", 
+      as: "receivedNotifications" 
+    });
+    
+    Notification.belongsTo(Users, { 
+      foreignKey: "targetUserId", 
+      as: "targetUser" 
+    });
+    
+    Users.hasMany(Notification, { 
+      foreignKey: "sourceUserId", 
+      as: "sentNotifications" 
+    });
+    
+    Notification.belongsTo(Users, { 
+      foreignKey: "sourceUserId", 
+      as: "sourceUser" 
+    });
+    
+    // Post Notifications
+    Post.hasMany(Notification, { 
+      foreignKey: "postId" 
+    });
+    
+    Notification.belongsTo(Post, { 
+      foreignKey: "postId" 
+    });
+  }
 }
 
 module.exports = setupAssociations;

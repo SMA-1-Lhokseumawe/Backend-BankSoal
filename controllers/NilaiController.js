@@ -28,16 +28,16 @@ const getNilaiQueryOptions = () => ({
             as: 'siswa'
         },
         {
+            model: Users,
+            attributes: ['username', 'email', 'role']
+        },
+        {
             model: Soal,
             as: 'soals',
             through: {
-                attributes: [] // Exclude junction table attributes if not needed
+                attributes: ['jawaban', 'benar'] // Include these attributes from NilaiSoal
             },
             attributes: ['id', 'soal', 'optionA', 'optionB', 'optionC', 'optionD', 'optionE', 'correctAnswer']
-        },
-        {
-            model: Users,
-            attributes: ['username', 'email', 'role']
         }
     ],
     order: [['createdAt', 'DESC']]
@@ -113,7 +113,8 @@ const createNilai = async (req, res) => {
             pelajaranId, 
             kelasId, 
             siswaId,
-            soalIds
+            soalIds,
+            detailedAnswers // New field
         } = req.body;
 
         // Validate required fields
@@ -139,12 +140,23 @@ const createNilai = async (req, res) => {
             pelajaranId,
             kelasId,
             siswaId,
-            soalIds: soalIds || [],
+            soalIds: soalIds || [], // Store soalIds as JSON
             userId: req.userId
         }, { transaction });
 
-        // If soalIds are provided, create NilaiSoal entries
-        if (soalIds && soalIds.length > 0) {
+        // If detailedAnswers are provided, create NilaiSoal entries
+        if (detailedAnswers && detailedAnswers.length > 0) {
+            const nilaiSoalEntries = detailedAnswers.map(answer => ({
+                nilaiId: newNilai.id,
+                soalId: answer.soalId,
+                jawaban: answer.jawaban,
+                benar: answer.benar
+            }));
+
+            await NilaiSoal.bulkCreate(nilaiSoalEntries, { transaction });
+        }
+        // Fallback to original method if no detailed answers
+        else if (soalIds && soalIds.length > 0) {
             const nilaiSoalEntries = soalIds.map(soalId => ({
                 nilaiId: newNilai.id,
                 soalId: soalId
@@ -174,6 +186,7 @@ const createNilai = async (req, res) => {
 };
 
 // Update Nilai
+// Update Nilai
 const updateNilai = async (req, res) => {
     const transaction = await db.transaction();
 
@@ -186,7 +199,8 @@ const updateNilai = async (req, res) => {
             pelajaranId, 
             kelasId, 
             siswaId,
-            soalIds 
+            soalIds,
+            detailedAnswers // Add support for detailed answers
         } = req.body;
 
         // Validate soalIds if provided
@@ -215,23 +229,32 @@ const updateNilai = async (req, res) => {
             soalIds: soalIds || existingNilai.soalIds
         }, { transaction });
 
-        // If soalIds are provided, update NilaiSoal entries
-        if (soalIds) {
-            // Remove existing NilaiSoal entries
-            await NilaiSoal.destroy({
-                where: { nilaiId: existingNilai.id },
-                transaction
-            });
+        // Remove existing NilaiSoal entries
+        await NilaiSoal.destroy({
+            where: { nilaiId: existingNilai.id },
+            transaction
+        });
 
-            // Create new NilaiSoal entries
-            if (soalIds.length > 0) {
-                const nilaiSoalEntries = soalIds.map(soalId => ({
-                    nilaiId: existingNilai.id,
-                    soalId: soalId
-                }));
+        // Create new NilaiSoal entries
+        if (detailedAnswers && detailedAnswers.length > 0) {
+            // If detailed answers are provided, use them
+            const nilaiSoalEntries = detailedAnswers.map(answer => ({
+                nilaiId: existingNilai.id,
+                soalId: answer.soalId,
+                jawaban: answer.jawaban,
+                benar: answer.benar
+            }));
 
-                await NilaiSoal.bulkCreate(nilaiSoalEntries, { transaction });
-            }
+            await NilaiSoal.bulkCreate(nilaiSoalEntries, { transaction });
+        } 
+        // Fallback to soalIds if no detailed answers
+        else if (soalIds && soalIds.length > 0) {
+            const nilaiSoalEntries = soalIds.map(soalId => ({
+                nilaiId: existingNilai.id,
+                soalId: soalId
+            }));
+
+            await NilaiSoal.bulkCreate(nilaiSoalEntries, { transaction });
         }
 
         // Commit transaction
@@ -254,39 +277,16 @@ const updateNilai = async (req, res) => {
     }
 };
 
-// Delete Nilai
 const deleteNilai = async (req, res) => {
-    const transaction = await db.transaction();
-
     try {
-        const existingNilai = await Nilai.findByPk(req.params.id);
-
-        if (!existingNilai) {
-            return res.status(404).json({ msg: "Nilai tidak ditemukan" });
-        }
-
-        // Remove associated NilaiSoal entries
-        await NilaiSoal.destroy({
-            where: { nilaiId: existingNilai.id },
-            transaction
+        await Nilai.destroy({
+            where: {
+                id: req.params.id,
+            },
         });
-
-        // Delete Nilai
-        await existingNilai.destroy({ transaction });
-
-        // Commit transaction
-        await transaction.commit();
-
         res.status(200).json({ msg: "Nilai Deleted" });
     } catch (error) {
-        // Rollback transaction in case of error
-        await transaction.rollback();
-
-        console.error('Error in deleteNilai:', error);
-        res.status(500).json({ 
-            msg: "Terjadi kesalahan saat menghapus nilai", 
-            error: error.message 
-        });
+        console.log(error.message);
     }
 };
 
