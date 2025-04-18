@@ -17,6 +17,22 @@ const SubModul = db.define('sub_modul', {
     modulId: {
         type: DataTypes.INTEGER
     },
+    audio: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    video: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    urlAudio: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    urlVideo: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     userId:{
         type: DataTypes.INTEGER,
         allowNull: false,

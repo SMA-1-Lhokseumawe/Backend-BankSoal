@@ -33,7 +33,39 @@ const sessionStore = SequelizeStore(session.Store)
 const store = new sessionStore({
     db: db
 })
-app.use(cors({ credentials: true, origin: 'http://localhost:3000'}));
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://192.168.100.78:3000',
+    'https://visited-tools-efficiency-temperature.trycloudflare.com'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+}));
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+    next();
+});
+
+app.options('*', cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
+
 app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,

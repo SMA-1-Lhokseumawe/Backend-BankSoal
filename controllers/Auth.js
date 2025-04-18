@@ -26,6 +26,7 @@ const Login = async(req, res) => {
 
         // Send user data and token
         res.status(200).json({
+            id: user.id,
             uuid: user.uuid,
             username: user.username,
             email: user.email,
